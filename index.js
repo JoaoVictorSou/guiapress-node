@@ -2,6 +2,9 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const connection = require('./db/database')
 
+const categoriesController = require('./categories/CategoriesController')
+const articleController = require('./articles/ArticlesController')
+
 const server = express()
 
 //VIEW ENGINE
@@ -23,6 +26,9 @@ connection
     })
 
 //ROUTES
+server.use('/', categoriesController)
+server.use('/', articleController)
+
 server.get('/', (req, res) => {
     res.render('index')
 })
