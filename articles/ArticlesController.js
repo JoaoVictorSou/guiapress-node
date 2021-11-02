@@ -1,4 +1,5 @@
 const express = require('express')
+const Artilce = require('./Article')
 const router = express.Router()
 
 router.get('/articles', (req, res) => {
