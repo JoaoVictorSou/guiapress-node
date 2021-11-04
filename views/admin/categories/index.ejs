@@ -29,7 +29,7 @@
                         </td>
                         <td>
                             <a href="" class="btn btn-warning">Editar</a>
-                            <form class="d-inline" action="/categories/delete" method="post">
+                            <form class="d-inline" action="/categories/delete" method="post" onsubmit="safeSubmit(event, this)">
                                 <input type="hidden" value="<%= category.id %>" name="id">
                                 <button class="btn btn-danger">Deletar</button>
                             </form>
@@ -39,5 +39,17 @@
             </tbody>
         </table>
     </div>
+
+    <script>
+        function safeSubmit(event, deleteThis) {
+            event.preventDefault()
+
+            const continueSubmit = window.confirm('Deseja realmente deletar este item?')
+
+            if(continueSubmit) {
+                deleteThis.submit()
+            } 
+        }
+    </script>
 </body>
 <%- include('../../partials/foot') %> 
