@@ -1,0 +1,35 @@
+<%- include('../../partials/head') %>
+<body>
+    <%- include('../../partials/navbar') %>
+    <div class="container">
+        <h2 class="mt-3 border-top border-bottom p-2">
+            Categorias
+        </h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Título</th>
+                    <th>Slug</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% categories.forEach((category) => { %>
+                    <tr>
+                        <td>
+                            <%= category.id %>
+                        </td>
+                        <td>
+                            <%= category.title %>
+                        </td>
+                        <td>
+                            <%= category.slug %>
+                        </td>
+                    </tr> 
+                <% }) %> 
+            </tbody>
+        </table>
+    </div>
+</body>
+<%- include('../../partials/foot') %> 

@@ -13,8 +13,8 @@ router.get('/admin/categories/new', (req, res) => {
 
 router.post('/categories/save', (req, res) => {
     const title = req.body.title
-    const slug = slugify(title)
     if (title) {
+        const slug = slugify(title)
         Category
             .create({
                 title: title,
@@ -26,6 +26,17 @@ router.post('/categories/save', (req, res) => {
     } else {
         res.redirect('/admin/categories/new')
     }
+})
+
+router.get('/admin/categories', (req, res) => {
+    Category
+        .findAll({ raw: true })
+        .then((categories) => {
+            res.render('admin/categories/index', {categories: categories})
+        })
+        .catch((error) => {
+            console.log(`category list was FAILED: ${error}`)
+        })
 })
 
 module.exports = router
