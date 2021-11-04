@@ -29,7 +29,10 @@
                         </td>
                         <td>
                             <a href="" class="btn btn-warning">Editar</a>
-                            <a href="" class="btn btn-danger">Deletar</a>
+                            <form class="d-inline" action="/categories/delete" method="post">
+                                <input type="hidden" value="<%= category.id %>" name="id">
+                                <button class="btn btn-danger">Deletar</button>
+                            </form>
                         </td>
                     </tr> 
                 <% }) %> 

@@ -28,6 +28,24 @@ router.post('/categories/save', (req, res) => {
     }
 })
 
+router.post('/categories/delete', (req, res) => {
+    const id = req.body.id
+
+    if(id && !isNaN(id)) {
+        Category
+            .destroy({
+                where: {
+                    id: id
+                }
+            })
+            .then(() => {
+                res.redirect('/admin/categories')
+            })
+    } else {
+        res.redirect('/admin/categories')
+    }
+})
+
 router.get('/admin/categories', (req, res) => {
     Category
         .findAll({ raw: true })
