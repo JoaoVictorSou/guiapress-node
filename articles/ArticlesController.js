@@ -5,7 +5,15 @@ const slugify = require('slugify')
 const router = express.Router()
 
 router.get('/admin/articles', (req, res) => {
-    res.send('hello, articles')
+    Article
+        .findAll({include: [{model: Category}]})
+        .then((articles) => {
+            res.render('admin/articles/index', {articles: articles})
+        })
+        .catch((error) => {
+            console.log(`articles list was FAILED: ${error}`)
+            res.render('index')
+        })
 })
 
 router.get('/admin/articles/new', (req, res) => {

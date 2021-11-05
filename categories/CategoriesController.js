@@ -11,6 +11,7 @@ router.get('/admin/categories', (req, res) => {
         })
         .catch((error) => {
             console.log(`category list was FAILED: ${error}`)
+            res.render('index')
         })
 })
 
