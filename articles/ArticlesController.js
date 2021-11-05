@@ -1,13 +1,40 @@
 const express = require('express')
-const Artilce = require('./Article')
+const Article = require('./Article')
+const Category = require('../categories/Category')
+const slugify = require('slugify')
 const router = express.Router()
 
-router.get('/articles', (req, res) => {
+router.get('/admin/articles', (req, res) => {
     res.send('hello, articles')
 })
 
 router.get('/admin/articles/new', (req, res) => {
-    res.send('hello, articles new')
+    Category
+        .findAll( {raw: true} )
+        .then((categories) => {
+            res.render('admin/articles/new', {categories: categories})
+        })
+        .catch((error) => {
+            console.log(`find articles ERROR ${error}`)
+            res.render('admin/articles/new')
+        })
+})
+
+router.post('/articles/save', (req, res) => {
+    const title = req.body.title
+    const body = req.body.body
+    const categoryId = req.body.categoryId
+
+    Article
+        .create({
+            title: title,
+            body: body,
+            categoryId: categoryId,
+            slug: slugify(title)
+        })
+        .then(() => {
+            res.redirect('/admin/articles')
+        })
 })
 
 module.exports = router
