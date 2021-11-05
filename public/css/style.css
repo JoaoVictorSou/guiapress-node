@@ -13,3 +13,7 @@ body {
 #formulario-pergunta button {
     margin-top: 3vh;
 }
+
+table td.limited {
+    max-width: 23vw;
+}

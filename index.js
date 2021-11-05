@@ -4,6 +4,7 @@ const connection = require('./db/database')
 
 const categoriesController = require('./categories/CategoriesController')
 const articleController = require('./articles/ArticlesController')
+const Article = require('./articles/Article')
 
 const server = express()
 
@@ -30,7 +31,39 @@ server.use('/', categoriesController)
 server.use('/', articleController)
 
 server.get('/', (req, res) => {
-    res.render('index')
+    Article
+        .findAll({raw: true, order: [
+            ['id', 'DESC']
+        ]})
+        .then((articles) => {
+            res.render('index', {articles: articles})
+        })
+        .catch((error) => {
+            console.log(`ARTICLE LIST ERROR: ${error} `)
+            res.render('index')
+        })
+})
+
+server.get('/:slug', (req, res) => {
+    const slug = req.params.slug
+    
+    Article
+        .findOne({
+            where: {
+                slug: slug
+            }
+        })
+        .then((article) => {
+            if (article) {
+                res.render('article', {article: article})
+            } else {
+                res.redirect('/')
+            }
+        })
+        .catch((error) => {
+            console.log(`ERROR to find required article: ${error}`)
+            req.redirect('/')
+        })
 })
 
 //SERVER EXECUTION
