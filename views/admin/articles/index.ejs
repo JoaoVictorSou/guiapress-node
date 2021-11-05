@@ -33,7 +33,7 @@
                         </td>
                         <td>
                             <a href="/admin/articles/edit/<%= article.id %> " class="btn btn-warning">Editar</a>
-                            <form class="d-inline" action="/admin/articles" method="post" onsubmit="safeSubmit(event, this)">
+                            <form class="d-inline" action="/articles/delete" method="post" onsubmit="safeSubmit(event, this)">
                                 <input type="hidden" value="<%= article.id %>" name="id">
                                 <button class="btn btn-danger">Deletar</button>
                             </form>
