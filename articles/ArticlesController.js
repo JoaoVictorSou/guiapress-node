@@ -48,14 +48,7 @@ router.post('/articles/save', (req, res) => {
 router.get('/admin/articles/edit/:id', (req, res) => {
     const id = req.params.id
     Article
-        .findOne({
-            where: {
-                id: id
-            },
-            include: {
-                model: Category
-            }
-        })
+        .findByPk(id)
         .then(article => {
             if (article) {
                 Category

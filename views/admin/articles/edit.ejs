@@ -8,7 +8,7 @@
             </div>
             <div class="card-body">
                 <form action="/articles/update" method="post">
-                    <input class="form-control" type="text" name="title" placeholder="Novo nome do artigo" value="<%= article.title %>">
+                    <input class="form-control mb-3" type="text" name="title" placeholder="Novo nome do artigo" value="<%= article.title %>">
                     <textarea class="form-control" name="body" placeholder="Conteúdo do artigo" id="article"><%= article.body %></textarea>
                     <label for="category" class="mb-0 mt-2">Categoria</label>
                     <select name="categoryId" id="category" class="form-control">
