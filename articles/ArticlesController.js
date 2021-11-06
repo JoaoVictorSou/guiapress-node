@@ -79,11 +79,12 @@ router.get('/admin/articles/edit/:id', (req, res) => {
 router.post('/articles/update', (req, res) => {
     const title = req.body.title
     const body = req.body.body
-    const slug = slugify(title)
     const categoryId = req.body.categoryId
     const id = req.body.id
 
-    Article
+    if (title && body && categoryId) {
+        let slug = slugify(title)
+        Article
         .update({
             title: title,
             body: body,
@@ -98,6 +99,9 @@ router.post('/articles/update', (req, res) => {
         .then(() => {
             res.redirect('/admin/articles')
         })
+    } else {
+        res.redirect(`/admin/articles/edit/${id}`)
+    }
 })
 
 router.post('/articles/delete', (req, res) => {
