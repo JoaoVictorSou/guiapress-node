@@ -1,11 +1,10 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const connection = require('./db/database')
-
-const categoriesController = require('./categories/CategoriesController')
-const articleController = require('./articles/ArticlesController')
 const Article = require('./articles/Article')
 const Category = require('./categories/Category')
+const categoriesController = require('./categories/CategoriesController')
+const articleController = require('./articles/ArticlesController')
 
 const server = express()
 
@@ -62,16 +61,16 @@ server.get('/:slug', (req, res) => {
                 slug: slug
             }
         })
-        .then((article) => {
+        .then(article => {
             if (article) {
                 Category
                     .findAll( {raw: true} )
                     .then((categories) => {
-                        res.render('index', {articles: articles, categories: categories})
+                        res.render('article', {article: article, categories: categories})
                     })
                     .catch((error) => {
                         console.log(`categories list ERROR: ${error} `)
-                        res.render('index')
+                        res.redirect('/')
                     })
             } else {
                 res.redirect('/')

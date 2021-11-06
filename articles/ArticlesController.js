@@ -45,6 +45,61 @@ router.post('/articles/save', (req, res) => {
         })
 })
 
+router.get('/admin/articles/edit/:id', (req, res) => {
+    const id = req.params.id
+    Article
+        .findOne({
+            where: {
+                id: id
+            },
+            include: {
+                model: Category
+            }
+        })
+        .then(article => {
+            if (article) {
+                Category
+                    .findAll()
+                    .then(categories => {
+                        res.render('admin/articles/edit', {
+                            article: article,
+                            categories: categories
+                        })
+                    })    
+            } else {
+                res.redirect('/')
+            }
+        })
+        .catch(error => {
+            console.log(`article edition screen FAILED ${error}`)
+            res.redirect('/admin/articles')
+        })
+})
+
+router.post('/articles/update', (req, res) => {
+    const title = req.body.title
+    const body = req.body.body
+    const slug = slugify(title)
+    const categoryId = req.body.categoryId
+    const id = req.body.id
+
+    Article
+        .update({
+            title: title,
+            body: body,
+            slug: slug,
+            categoryId: categoryId
+        }, 
+        {
+            where: {
+                id: id
+            }
+        })
+        .then(() => {
+            res.redirect('/admin/articles')
+        })
+})
+
 router.post('/articles/delete', (req, res) => {
     const id = req.body.id
 
