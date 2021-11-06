@@ -5,6 +5,7 @@ const connection = require('./db/database')
 const categoriesController = require('./categories/CategoriesController')
 const articleController = require('./articles/ArticlesController')
 const Article = require('./articles/Article')
+const Category = require('./categories/Category')
 
 const server = express()
 
@@ -36,10 +37,18 @@ server.get('/', (req, res) => {
             ['id', 'DESC']
         ]})
         .then((articles) => {
-            res.render('index', {articles: articles})
+            Category
+                .findAll( {raw: true} )
+                .then((categories) => {
+                    res.render('index', {articles: articles, categories: categories})
+                })
+                .catch((error) => {
+                    console.log(`categories list ERROR: ${error} `)
+                    res.render('index')
+                })
         })
         .catch((error) => {
-            console.log(`ARTICLE LIST ERROR: ${error} `)
+            console.log(`article list ERROR: ${error} `)
             res.render('index')
         })
 })
@@ -55,13 +64,50 @@ server.get('/:slug', (req, res) => {
         })
         .then((article) => {
             if (article) {
-                res.render('article', {article: article})
+                Category
+                    .findAll( {raw: true} )
+                    .then((categories) => {
+                        res.render('index', {articles: articles, categories: categories})
+                    })
+                    .catch((error) => {
+                        console.log(`categories list ERROR: ${error} `)
+                        res.render('index')
+                    })
             } else {
                 res.redirect('/')
             }
         })
         .catch((error) => {
             console.log(`ERROR to find required article: ${error}`)
+            req.redirect('/')
+        })
+})
+
+server.get('/category/:slug', (req, res) => {
+    const slug = req.params.slug
+
+    Category
+        .findOne({
+            where: {
+                slug: slug
+            },
+            include: {
+                model: Article
+            }
+        })
+        .then((category) => {
+            if (category) {
+                Category
+                    .findAll()
+                    .then(categories => {
+                        res.render('index', {categories: categories, articles: category.articles})
+                    })
+            } else {
+                res.redirect('/')
+            }
+        })
+        .catch((error) => {
+            console.log(`ERROR to find required category: ${error}`)
             req.redirect('/')
         })
 })
