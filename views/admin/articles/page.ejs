@@ -1,0 +1,17 @@
+<%- include('../../partials/head') %>
+<body>
+    <%- include('../../partials/homenavbar') %> 
+    <div class="container mt-4">
+        <% articles.rows.forEach((article) => { %>
+            <div class="card mb-3">
+                <div class="card-header">
+                    <%= article.title %> 
+                </div>
+                <div class="card-footer">
+                    <a href="/<%= article.slug %> " class="btn btn-primary">Ler artigo</a>
+                </div>
+            </div>
+        <% }) %> 
+    </div>
+</body>
+<%- include('../../partials/foot') %> 

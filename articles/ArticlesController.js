@@ -78,20 +78,20 @@ router.post('/articles/update', (req, res) => {
     if (title && body && categoryId) {
         let slug = slugify(title)
         Article
-        .update({
-            title: title,
-            body: body,
-            slug: slug,
-            categoryId: categoryId
-        }, 
-        {
-            where: {
-                id: id
-            }
-        })
-        .then(() => {
-            res.redirect('/admin/articles')
-        })
+            .update({
+                title: title,
+                body: body,
+                slug: slug,
+                categoryId: categoryId
+            }, 
+            {
+                where: {
+                    id: id
+                }
+            })
+            .then(() => {
+                res.redirect('/admin/articles')
+            })
     } else {
         res.redirect(`/admin/articles/edit/${id}`)
     }
@@ -113,6 +113,33 @@ router.post('/articles/delete', (req, res) => {
     } else {
         res.redirect('/admin/articles')
     }
+})
+
+router.get('/articles/page/:num', (req, res) => {
+    const page = req.params.num
+    const offset = isNaN(page) || page == 1 ? 0 : (parseInt(page) * 4) - 4
+
+    Article
+        .findAndCountAll({
+            limit: 4,
+            offset: offset,
+            order: [
+                ['id', 'DESC']
+            ]
+        })
+        .then((articles) => {
+            const pageExistence = offset + 4 < articles.count
+            
+            Category
+                .findAll()
+                .then((categories) => {
+                    res.render('admin/articles/page', {
+                        articles: articles, 
+                        categories: categories,
+                        pageExistence: pageExistence
+                    })
+                })
+        })
 })
 
 module.exports = router
