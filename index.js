@@ -32,9 +32,13 @@ server.use('/', articleController)
 
 server.get('/', (req, res) => {
     Article
-        .findAll({raw: true, order: [
-            ['id', 'DESC']
-        ]})
+        .findAll({
+            raw: true, 
+            order: [
+                ['id', 'DESC']
+            ],
+            limit: 4
+        })
         .then((articles) => {
             Category
                 .findAll( {raw: true} )

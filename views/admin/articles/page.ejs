@@ -11,7 +11,22 @@
                     <a href="/<%= article.slug %> " class="btn btn-primary">Ler artigo</a>
                 </div>
             </div>
-        <% }) %> 
+        <% }) %>
+        
+        <div class="row pb-4">
+            <div class="col col-6 text-left">
+                <% if (page > 2) { %> 
+                    <a href="/articles/page/<%= page-1 %>" class="text-decoration-none text-secondary"><<< Prev</a>
+                <% } else { %>
+                    <a href="/" class="text-decoration-none text-secondary"><<< Prev</a>
+                <% } %> 
+            </div>
+            <div class="col col-6 text-right">
+                <% if (pageExistence) { %> 
+                    <a href="/articles/page/<%= page+1 %> " class="text-decoration-none text-secondary">Next >>></a>
+                <% } %> 
+            </div>
+        </div>
     </div>
 </body>
 <%- include('../../partials/foot') %> 

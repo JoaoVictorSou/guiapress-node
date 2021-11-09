@@ -117,7 +117,7 @@ router.post('/articles/delete', (req, res) => {
 
 router.get('/articles/page/:num', (req, res) => {
     const page = req.params.num
-    const offset = isNaN(page) || page == 1 ? 0 : (parseInt(page) * 4) - 4
+    const offset = isNaN(page) || page == 1 || page == 0 ? 0 : (parseInt(page) * 4) - 4
 
     Article
         .findAndCountAll({
@@ -136,7 +136,8 @@ router.get('/articles/page/:num', (req, res) => {
                     res.render('admin/articles/page', {
                         articles: articles, 
                         categories: categories,
-                        pageExistence: pageExistence
+                        pageExistence: pageExistence,
+                        page: parseInt(page)
                     })
                 })
         })
