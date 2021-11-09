@@ -1,10 +1,14 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const connection = require('./db/database')
+
 const Article = require('./articles/Article')
 const Category = require('./categories/Category')
-const categoriesController = require('./categories/CategoriesController')
+const User = require('./user/User')
+
 const articleController = require('./articles/ArticlesController')
+const categoriesController = require('./categories/CategoriesController')
+const usersController = require('./user/UsersController')
 
 const server = express()
 
@@ -29,6 +33,7 @@ connection
 //ROUTES
 server.use('/', categoriesController)
 server.use('/', articleController)
+server.use('/', usersController)
 
 server.get('/', (req, res) => {
     Article
