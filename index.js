@@ -45,8 +45,7 @@ server.use('/', usersController)
 
 server.get('/', (req, res) => {
     Article
-        .findAll({
-            raw: true, 
+        .findAndCountAll({ 
             order: [
                 ['id', 'DESC']
             ],
@@ -56,24 +55,24 @@ server.get('/', (req, res) => {
             Category
                 .findAll()
                 .then((categories) => {
-                    Article
-                        .count()
-                        .then(articlesQuantity => {
-                            let pageExistence = articlesQuantity > 4
-                            res.render('index', {
-                                articles, 
-                                categories, 
-                                pageExistence
-                            })
-                        })
+                    let pageExistence = articles.count > 4
+                    res.render('index', {
+                        articles: articles.rows, 
+                        categories, 
+                        pageExistence
+                    })
                 })
-                .catch((error) => {
-                    console.log(`categories list ERROR: ${error} `)
-                    res.render('index')
+                .catch((err) => {
+                    console.log(`[ERR] categories secondary-list NOT found: ${err} `)
+                    res.render('index', {
+                        categories: [],
+                        articles: [],
+                        pageExistence: false
+                    })
                 })
         })
-        .catch((error) => {
-            console.log(`article list ERROR: ${error} `)
+        .catch((err) => {
+            console.log(`[ERR] article list FAIL: ${err} `)
             res.render('index')
         })
 })
@@ -92,18 +91,21 @@ server.get('/:slug', (req, res) => {
                 Category
                     .findAll( {raw: true} )
                     .then((categories) => {
-                        res.render('article', {article: article, categories: categories})
+                        res.render('article', {
+                            article, 
+                            categories
+                        })
                     })
-                    .catch((error) => {
-                        console.log(`categories list ERROR: ${error} `)
+                    .catch((err) => {
+                        console.log(`[ERR] categories secondary-list NOT found: ${err} `)
                         res.redirect('/')
                     })
             } else {
                 res.redirect('/')
             }
         })
-        .catch((error) => {
-            console.log(`ERROR to find required article: ${error}`)
+        .catch((err) => {
+            console.log(`[ERR] specific article NOT found: ${err}`)
             req.redirect('/')
         })
 })
@@ -135,8 +137,8 @@ server.get('/category/:slug', (req, res) => {
                 res.redirect('/')
             }
         })
-        .catch((error) => {
-            console.log(`ERROR to find required category: ${error}`)
+        .catch((err) => {
+            console.log(`[ERR] articles in this category NOT found: ${err}`)
             req.redirect('/')
         })
 })
