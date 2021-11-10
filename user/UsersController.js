@@ -67,6 +67,90 @@ router.post('/users/save', adminAuth, (req, res) => {
         })
 })
 
+router.get('/admin/users/edit/:id', adminAuth, (req, res) => {
+    const id = req.params.id
+
+    User
+        .findByPk(id)
+        .then(user => {
+            if (user) {
+                Category
+                    .findAll()
+                    .then(categories => {
+
+
+                        res.render('admin/users/edit', {
+                            user: {
+                                email: user.email,
+                                id: user.id
+                            },
+                            categories: categories
+                        })
+                    })
+                    .catch((err) => {
+                        console.log(`[ERR] category secondary-list FAIL (user edit): ${err}`)
+                        res.redirect('/')
+                    })
+            } else {
+                res.redirect('/admin/user')
+            }
+        })
+        .catch((err) => {
+            console.log(`[ERR] user edit FAIL: ${err}`)
+            res.redirect('/')
+        })
+})
+
+router.post('/users/update', adminAuth, (req, res) => {
+    const email = req.body.email
+    const current = req.session.user
+    const id = req.body.id
+
+    User
+        .update({
+            email: email
+        }, 
+        {
+            where: {
+                id: id
+            }
+        })
+        .then(_ => {
+            if (current.id == id) {
+                res.redirect('/logout')
+            } else {
+                res.redirect('/admin/users')
+            }
+        })
+        .catch((err) => {
+            console.log(`[ERR] user update FAIL: ${err}`)
+            res.redirect('/')
+        })
+})
+
+router.post('/users/delete', adminAuth, (req, res) => {
+    const id = req.body.id
+    const current = req.session.user
+
+    User
+        .destroy({
+            where: {
+                id: id
+            }
+        })
+        .then(_ => {
+            if (current.id == id) {
+                res.redirect('/logout')
+            } else {
+                res.redirect('/admin/users')
+            }
+        })
+        .catch((err) => {
+            console.log(`[ERR] user delete FAIL: ${err}`)
+            res.redirect('/')
+        })
+})
+
 router.get('/login', (req, res) => {
     res.render('admin/users/login')
 })
@@ -107,7 +191,7 @@ router.post('/authenticate', (req, res) => {
 
 router.get('/logout', (req, res) => {
     req.session.user = undefined
-    res.redirect('/')
+    res.redirect('/login')
 })
 
 module.exports = router
