@@ -189,7 +189,7 @@ router.post('/authenticate', (req, res) => {
         })
 })
 
-router.get('/logout', (req, res) => {
+router.get('/logout', adminAuth, (req, res) => {
     req.session.user = undefined
     res.redirect('/login')
 })
