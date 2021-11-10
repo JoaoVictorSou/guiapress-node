@@ -7,7 +7,7 @@ const Article = require('./articles/Article')
 const Category = require('./categories/Category')
 const User = require('./user/User')
 
-const articleController = require('./articles/ArticlesController')
+const articlesController = require('./articles/ArticlesController')
 const categoriesController = require('./categories/CategoriesController')
 const usersController = require('./user/UsersController')
 
@@ -40,7 +40,7 @@ connection
 
 //ROUTES
 server.use('/', categoriesController)
-server.use('/', articleController)
+server.use('/', articlesController)
 server.use('/', usersController)
 
 server.get('/', (req, res) => {
@@ -54,9 +54,18 @@ server.get('/', (req, res) => {
         })
         .then((articles) => {
             Category
-                .findAll( {raw: true} )
+                .findAll()
                 .then((categories) => {
-                    res.render('index', {articles: articles, categories: categories})
+                    Article
+                        .count()
+                        .then(articlesQuantity => {
+                            let pageExistence = articlesQuantity > 4
+                            res.render('index', {
+                                articles, 
+                                categories, 
+                                pageExistence
+                            })
+                        })
                 })
                 .catch((error) => {
                     console.log(`categories list ERROR: ${error} `)
@@ -116,7 +125,11 @@ server.get('/category/:slug', (req, res) => {
                 Category
                     .findAll()
                     .then(categories => {
-                        res.render('index', {categories: categories, articles: category.articles})
+                        res.render('index', {
+                            categories, 
+                            articles: category.articles,
+                            pageExistence: false
+                        })
                     })
             } else {
                 res.redirect('/')
