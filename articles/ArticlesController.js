@@ -24,11 +24,15 @@ router.get('/admin/articles/new', adminAuth, (req, res) => {
     Category
         .findAll( {raw: true} )
         .then((categories) => {
-            res.render('admin/articles/new', {categories: categories})
+            if (categories.length) {
+                res.render('admin/articles/new', {categories: categories})
+            } else {
+                res.redirect('/admin/categories')
+            }
         })
         .catch((error) => {
             console.log(`find articles ERROR ${error}`)
-            res.render('admin/articles/new')
+            res.redirect('/')
         })
 })
 
