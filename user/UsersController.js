@@ -5,7 +5,9 @@ const bcrypt = require('bcryptjs')
 const User = require('./User')
 const Category = require('../categories/Category')
 
-router.get('/admin/users', (req, res) => {
+const adminAuth = require('../middlewares/adminAuth')
+
+router.get('/admin/users', adminAuth, (req, res) => {
     User
         .findAll()
         .then(users => {
@@ -28,11 +30,11 @@ router.get('/admin/users', (req, res) => {
         })
 })
 
-router.get('/admin/users/new', (req, res) => {
+router.get('/admin/users/new', adminAuth, (req, res) => {
     res.render('admin/users/new')
 })
 
-router.post('/users/save', (req, res) => {
+router.post('/users/save', adminAuth, (req, res) => {
     const email = req.body.email || null
     const password = req.body.password || null
     
@@ -62,6 +64,44 @@ router.post('/users/save', (req, res) => {
             } else {
                 res.redirect('/admin/users/new')
             }
+        })
+})
+
+router.get('/login', (req, res) => {
+    res.render('admin/users/login')
+})
+
+router.post('/authenticate', (req, res) => {
+    const email = req.body.email
+    const password = req.body.password
+
+    User
+        .findOne({
+            where: {
+                email: email
+            }
+        })
+        .then(user => {
+            if (user) {
+                const correct = bcrypt.compareSync(password, user.password)
+
+                if (correct) {
+                    req.session.user = {
+                        id: user.id,
+                        email: user.email
+                    }
+
+                    res.redirect('/admin/articles')
+                } else {
+                    res.redirect('/login')
+                }
+            } else {
+                res.redirect('/login')
+            }
+        })
+        .catch(err => {
+            console.log(`[ERR] user authenticate: ${err}`)
+            res.redirect('/')
         })
 })
 
