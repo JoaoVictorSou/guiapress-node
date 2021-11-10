@@ -1,0 +1,50 @@
+<%- include('../../partials/head') %>
+<body>
+    <%- include('../../partials/navbar') %>
+    <div class="container">
+        <h2 class="mt-3 border-top p-1">
+            Usuários
+        </h2>
+        <a class="btn btn-success mb-4" href="/admin/users/new">Cadastrar usuário</a>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% users.forEach((user) => { %>
+                    <tr>
+                        <td>
+                            <%= user.id %>
+                        </td>
+                        <td>
+                            <%= user.email %>
+                        </td>
+                        <td>
+                            <a href="/admin/users/edit/<%= user.id %> " class="btn btn-warning">Editar</a>
+                            <form class="d-inline" action="/users/delete" method="post" onsubmit="safeSubmit(event, this)">
+                                <input type="hidden" value="<%= user.id %>" name="id">
+                                <button class="btn btn-danger">Deletar</button>
+                            </form>
+                        </td>
+                    </tr> 
+                <% }) %> 
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function safeSubmit(event, deleteThis) {
+            event.preventDefault()
+
+            const continueSubmit = window.confirm('Deseja realmente deletar este item?')
+
+            if(continueSubmit) {
+                deleteThis.submit()
+            } 
+        }
+    </script>
+</body>
+<%- include('../../partials/foot') %> 

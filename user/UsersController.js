@@ -1,10 +1,31 @@
 const express = require('express')
 const router = express.Router()
-const User = require('./User')
 const bcrypt = require('bcryptjs')
 
+const User = require('./User')
+const Category = require('../categories/Category')
+
 router.get('/admin/users', (req, res) => {
-    res.send('hello, world')
+    User
+        .findAll()
+        .then(users => {
+            Category
+                .findAll()
+                .then(categories => {
+                    res.render('admin/users/index', {
+                        users: users,
+                        categories
+                    })
+                })
+                .catch(err => {
+                    console.log(`[ERR] categories secondary-list: ${err}`)
+                    res.redirect('/')
+                })
+        })
+        .catch(err => {
+            console.log(`[ERR] user list: ${err}`)
+            res.redirect('/')
+        })
 })
 
 router.get('/admin/users/new', (req, res) => {
